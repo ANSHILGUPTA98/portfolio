@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Anshil Gupta | Portfolio</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --main-bg: #181535;
+      --purple: #aa71f8;
+      --blue: #50e3f7;
+      --cyan: #6deccf;
+      --pink: #fe86c6;
+      --card-bg: #24185c;
+      --shadow: 0 8px 32px 0 rgba(31,38,135,0.18);
+      --gradient: linear-gradient(90deg, #50e3f7, #aa71f8, #fe86c6);
+    }
+    *{ box-sizing:border-box; }
+    body {
+      margin:0;
+      background: var(--main-bg);
+      color:#fff;
+      font-family:'Montserrat',sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    #stars-canvas {
+      position:fixed;
+      top:0; left:0; width:100vw; height:100vh;
+      z-index:0; pointer-events:none;
+    }
+    a { color:inherit; text-decoration:none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+    a:focus { outline: none; } 
+    a:focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 4px;
+      border-radius: 6px;
+    }
+    a:active { outline: none; }
+    /* keep keyboard accessibility (focus-visible) but remove the mouse/touch rectangle */
+    header {
+      position:sticky; top:0; z-index:2;
+      background: rgba(24,21,53,0.84); /* semi-transparent */
+      box-shadow: var(--shadow);
+      padding:0;
+    }
+    .nav-container {
+      max-width: 1140px; margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 34px;
+    }
+    .logo { font-weight: 900; font-size: 1.56rem; color: var(--blue);}
+    .logo .highlight { color: var(--purple);}
+    nav { display:flex; gap:30px; }
+    nav a {
+      font-weight:600; color:#fff; font-size:1.03rem;
+      transition: color 0.2s;
+      position:relative;
+      letter-spacing:0.1px;
+    }
+    nav a:after {
+      content:""; display:block; height:2.5px;
+      width:0%; background: var(--gradient); transition: width 0.3s;
+      border-radius:9px; margin-top:2.5px;
+    }
+    nav a:hover { color: var(--blue);}
+    nav a:hover:after, nav a.active:after { width:80%; }
+    @media(max-width:700px) {
+      .nav-container { padding:16px 8px; flex-direction: column; align-items: flex-start;}
+      nav { gap:18px; margin-top:8px;}
+    }
+    /* ---- HERO SECTION ---- */
+    .hero {
+      min-height: 72vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding:90px 12px 40px 12px;
+      background: none;
+      position:relative; z-index:1;
+    }
+    .hero-content { z-index:2; }
+    .hero h1 {
+      font-size: 3.1rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom:12px;
+      text-shadow:0 0 16px rgba(127,167,255,0.18);
+    }
+    .gradient-text {
+      background: var(--gradient);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+    .subtitle {
+      font-size: 1.25rem;
+      margin-bottom:2.1rem;
+      letter-spacing:0.15px;
+    }
+    .subtitle .blue { color:var(--blue);}
+    .subtitle .purple { color:var(--purple);}
+    .subtitle .pink { color:var(--pink);}
+    .hero-buttons {
+      display: flex; gap:18px; justify-content:center; margin-bottom:30px;
+    }
+    .btn {
+      padding: 13px 28px;
+      border-radius: 50px;
+      font-size: 1.07rem; font-weight: 700; border: none; cursor: pointer;
+      text-decoration: none; color: #fff; outline: none;
+      box-shadow: var(--shadow);
+    }
+    .btn.gradient {
+      background: var(--gradient); color:#1d1950;
+      transition: background 0.25s, color 0.25s;
+    }
+    .btn.gradient:hover { background: var(--purple); color:#fff;}
+    .btn.outline {
+      background: transparent;
+      color: #fff;
+      border: 2px solid var(--blue);
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn.outline:hover { background: var(--blue); color:#101028;}
+    .rocket-icon {
+      position: absolute; top: 74px; right: 70px; font-size: 2.6rem;
+      filter: drop-shadow(0 0 12px var(--blue)); user-select:none; pointer-events:none;
+      animation: rocketwiggle 2.1s infinite linear alternate;
+    }
+    @keyframes rocketwiggle {
+      0%,100% { transform:translateY(0) rotate(-17deg);}
+      50% { transform:translateY(-8px) rotate(-23deg);}
+    }
+    @media (max-width:900px){
+      .rocket-icon { display:none;}
+      .hero h1 { font-size: 2.1rem;}
+    }
+    /* ---- SKILLS SECTION ---- */
+    .skills {
+      padding:50px 6px 20px 6px;
+      position:relative; z-index:1; text-align:center;
+    }
+    .skills h2 {
+      color:var(--blue); font-size:2.4rem; margin-bottom:34px;
+      letter-spacing:1.1px; font-weight:800;
+    }
+    .skill-columns {
+      display: flex; 
+      flex-wrap: wrap; 
+      gap: 32px; 
+      justify-content: center;
+      align-items: stretch; /* ensure children match heights */
+    }
+    .skill-card {
+      background: var(--card-bg);
+      border-radius: 16px; 
+      box-shadow: var(--shadow);
+      padding: 36px 26px;
+      flex: 0 1 260px;      /* flexible width with preferred 260px */
+      min-width: 240px;
+      max-width: 300px;
+      min-height: 240px;    /* fixed minimum height so all cards look even */
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .skill-card:hover { transform: translateY(-7px) scale(1.025); }
+    .card-title {
+      font-size: 1.35rem; font-weight: 700; color: var(--cyan); margin-bottom: 16px;
+      letter-spacing: 0.8px;
+    }
+    .skill-card ul { list-style: none; margin: 0; padding: 0; }
+    .skill-card li {
+      background: rgba(80,227,247,0.15); color: #fff;
+      margin: 10px 0; padding: 8px 0; border-radius: 6px;
+      font-size: 1.02rem; font-weight: 500;
+      letter-spacing: 0.2px;
+    }
+    .skill-card:nth-child(2) .card-title { color: var(--purple); }
+    .skill-card:nth-child(3) .card-title { color: var(--pink); }
+
+    @media (max-width:850px) {
+      .skill-columns { flex-direction: column; align-items: center; }
+      .skill-card { width: 100%; max-width: 520px; min-height: auto; }
+    }
+    /* ---- ABOUT ---- */
+    .about { padding:50px 8px; text-align:center;}
+    .about h2 {
+      color:var(--blue); font-size:2.4rem; margin-bottom:34px;
+      letter-spacing:1.1px; font-weight:800;
+    }
+    .about-content {
+      display:flex; flex-wrap:wrap; gap:48px; justify-content:center;align-items:flex-start;
+    }
+    .about-card {
+      background: var(--card-bg);
+      border-radius:12px;
+      box-shadow: var(--shadow);
+      min-width:220px;
+      max-width:320px;
+      padding:14px 16px;
+      text-align:center;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:10px;
+      min-height: auto;
+    }
+    .about-img {
+      width:96px;
+      height:96px;
+      border-radius:50%;
+      margin:8px auto 12px auto;
+      background: url('assets/port.jpg') center/cover;
+      border:4px solid var(--blue);
+      box-shadow: 0 8px 20px rgba(8,12,40,0.5);
+    }
+    .about-card h3 { font-size:1.18rem; margin-bottom:4px; }
+    .about-card .major { font-size:0.98rem; margin-bottom:8px; }
+    .about-card .desc { color:#cacbe8; font-size: 0.94rem;}
+    .about-info {
+      text-align:left; max-width:400px; padding:0 10px;
+    }
+    .about-info h4 {
+      font-weight: bold; font-size: 1.07rem; margin-top:17px; margin-bottom:6px;
+    }
+    .cyan { color:var(--cyan);} .purple{color:var(--purple);}
+    .about-info p {
+      margin-bottom:16px; color: #ececff; line-height:1.5; font-size:1.02rem;
+    }
+    @media (max-width:1000px){.about-content{flex-direction:column;align-items:center;}}
+    /* ---- PROJECTS ---- */
+    .projects { padding:50px 4px; text-align:center;}
+    .projects h2 {
+      color:var(--blue); font-size:2.4rem; margin-bottom:28px;
+      letter-spacing:1.05px; font-weight:800;
+    }
+    .projects-list {
+      display: flex; flex-wrap: wrap; gap:32px; justify-content:center;
+    }
+    .project-card {
+      background: var(--card-bg);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      min-width: 240px; max-width: 355px;
+      overflow: hidden; text-align: left;
+      transition: transform 0.23s, box-shadow 0.23s;
+      display: flex; flex-direction:column;
+    }
+    .project-card:hover {
+      transform: translateY(-7px) scale(1.0275);
+      box-shadow:0 0 32px 4px var(--cyan);
+    }
+    .project-card img {
+      width:100%; height:145px; object-fit:cover;
+    }
+    .project-info { padding:14px 17px;}
+    .project-info h3 { color:var(--cyan); font-size:1.16rem; margin-bottom:6px;}
+    .project-info p { color:#efedfa; font-size:0.97rem;}
+    .tags { margin-top:9px;}
+    .tags span {
+      display:inline-block;
+      background: rgba(80,227,247,0.19); color:#fff;
+      margin:2px 7px 2px 0; font-size:0.92rem; padding:3.5px 12px; border-radius: 12px;
+    }
+    .project-card:nth-child(2) .tags span {background: rgba(170,113,248,0.16);}
+    @media (max-width:900px){
+      .projects-list{flex-direction:column;align-items:center;}
+    }
+    /* ---- CONTACT ---- */
+    .contact { padding:54px 8px 52px 8px; background:linear-gradient(180deg,#24185c 80%,var(--main-bg) 100%);
+      border-radius: 14px; margin: 36px auto 14px auto; max-width: 1200px; text-align:center; z-index:1;position:relative;box-shadow:var(--shadow);}
+    .contact h2 { font-size:2.3rem;color:var(--blue);letter-spacing:1.1px;margin-bottom:22px;font-weight:800;}
+    .contact-flex { display:flex; flex-wrap:wrap; gap:54px; justify-content:center;align-items:flex-start;}
+    .info-section { min-width:290px; max-width:400px; background: rgba(26,17,64,0.18); border-radius:16px; padding:32px 18px 22px 28px; box-shadow: var(--shadow); margin-bottom:16px;}
+    .star-label { display:flex; align-items:center; font-weight:700; color:var(--cyan); font-size:1.09rem; margin-bottom:8px; letter-spacing:0.2px;}
+    .star-label span { font-size:1.45em; margin-right:8px; animation: twinkle 2s infinite; }
+    @keyframes twinkle { 0%,100%{filter:drop-shadow(0 0 8px var(--cyan));opacity:1;}70%{filter:none;opacity:0.73;}80%{filter:drop-shadow(0 0 3px var(--pink));opacity:1;} }
+    .info-section p{ margin:14px 0 25px 0; line-height:1.55; color: #dee7fe; font-weight:400;}
+    .contact-card{ background:rgba(35,57,128,0.16);border-radius:13px;padding:14px 22px;display:flex;align-items:center;margin-bottom:13px;box-shadow:var(--shadow);}
+    .contact-ico-holder{width:45px;height:45px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:2rem;margin-right:15px;color:#fff;background:linear-gradient(135deg,var(--cyan),var(--purple));box-shadow:0 2px 10px #aa71f850;}
+    .contact-label{font-size:0.9rem;font-weight:700;color:var(--blue);}
+    .contact-value{color:#fff;font-weight:600;font-size:1.08rem;text-decoration:none;display:block;}
+    .contact-value:hover{color:var(--pink);}
+    .contact-form{background:rgba(23,18,64,0.16);border:1.6px solid var(--blue);border-radius:16px;min-width:270px;max-width:410px;padding:28px 20px 24px 20px;display:flex;flex-direction:column;box-shadow:var(--shadow);gap:18px;margin-bottom:18px;}
+    .contact-form label{color:var(--blue);font-weight:600;display:block;margin-bottom:6px;font-size:1.02rem;}
+    .contact-form input, .contact-form textarea{width:100%;border:none;border-radius:8px;margin-bottom:11px;padding:11px 11px;font-size:1.01rem;background:rgba(127,199,255,0.14);color:#fff;font-family:inherit;resize:vertical;transition:outline 0.23s,box-shadow 0.18s;}
+    .contact-form input:focus, .contact-form textarea:focus{outline:2px solid var(--blue);box-shadow:0 0 10px var(--blue);}
+    .contact-form button{margin-top:10px;border:none;border-radius:36px;background:var(--gradient);color:#1d1950;font-weight:700;font-size:1.09rem;padding:13px 0;width:100%;box-shadow:var(--shadow);cursor:pointer;transition:background 0.22s,color 0.22s;}
+    .contact-form button:hover{color:#fff;background:var(--purple);}
+    @media (max-width:900px) {
+      .contact-flex, .about-content, .skill-columns, .projects-list {flex-direction:column;align-items:center;}
+      .main-container, .contact, .contact-form, .info-section {width:100%;max-width:500px;margin: 0 auto;}
+      .nav-container{padding:14px 4px; }
+    }
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 22px 0 14px 0;
+      color: #abdcd9;
+      font-size: 1.01rem;
+      background: transparent;
+      letter-spacing: 0.4px;
+    }
+    .footer-glow {
+      color: var(--cyan);
+      text-shadow: 0 0 19px var(--purple);
+    }
+
+    /* Space-themed modal (added) */
+    .space-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(2,6,23,0.68);
+      backdrop-filter: blur(6px) saturate(120%);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 28px;
+    }
+    .space-modal-overlay.show { display: flex; }
+    .space-modal {
+      width: 100%;
+      max-width: 520px;
+      border-radius: 18px;
+      padding: 22px;
+      position: relative;
+      background: linear-gradient(180deg, rgba(15,10,40,0.96), rgba(6,4,23,0.9));
+      box-shadow: 0 18px 60px rgba(8,12,40,0.7), 0 0 40px rgba(80,227,247,0.06) inset;
+      border: 1px solid rgba(110,92,255,0.12);
+      transform: translateY(18px) scale(0.98);
+      animation: modalPop 360ms cubic-bezier(.16,1,.3,1) forwards;
+      text-align: center;
+      color: #eaf7ff;
+      overflow: hidden;
+    }
+    @keyframes modalPop {
+      to { transform: translateY(0) scale(1); }
+    }
+    .space-modal .planet {
+      font-size: 54px;
+      display: inline-block;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 8px 26px rgba(80,227,247,0.18));
+      transform: translateY(-4px);
+      animation: float 3.8s ease-in-out infinite;
+    }
+    @keyframes float { 0%,100% { transform: translateY(-4px);} 50% { transform: translateY(6px); } }
+    .space-modal h3 {
+      margin: 4px 0 8px 0;
+      font-size: 1.36rem;
+      letter-spacing: 0.6px;
+      color: var(--cyan);
+    }
+    .space-modal p {
+      color: #dbefff;
+      margin: 0 0 16px 0;
+      line-height: 1.45;
+      font-size: 0.98rem;
+    }
+    .space-modal .actions {
+      display:flex; gap:12px; justify-content:center; margin-top:8px;
+    }
+    .space-modal .btn-close {
+      padding: 10px 18px; border-radius: 999px; border: none; cursor:pointer;
+      background: transparent; color:#e9f8ff; font-weight:700; border:1.6px solid rgba(80,227,247,0.14);
+      transition: background 0.18s, transform 0.12s;
+    }
+    .space-modal .btn-close:hover { background: rgba(80,227,247,0.06); transform: translateY(-3px); }
+    .space-modal .btn-snooze {
+      padding: 10px 18px; border-radius: 999px; cursor:pointer; border:none;
+      background: linear-gradient(90deg,#50e3f7,#aa71f8); color:#0b0820; font-weight:800;
+      box-shadow: 0 10px 34px rgba(80,227,247,0.14);
+    }
+    /* small star sparkle inside modal header */
+    .space-modal::before {
+      content: "";
+      position: absolute;
+      inset: -40% -20% auto -20%;
+      height: 160px;
+      background: radial-gradient(closest-side, rgba(80,227,247,0.06), transparent 60%);
+      transform: rotate(-18deg);
+      pointer-events: none;
+    }
+    @media (max-width:600px) {
+      .space-modal { padding: 18px; border-radius: 14px; }
+      .space-modal .planet { font-size:44px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Animated stars background -->
+  <canvas id="stars-canvas"></canvas>
+
+  <!-- Header / Navigation -->
+  <header>
+    <div class="nav-container">
+      <div class="logo">Anshil <span class="highlight">Gupta</span></div>
+      <nav>
+        <a href="#home" class="active">Home</a>
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section id="home" class="hero">
+      <div class="hero-content">
+        <h1>Hi, I'm <span class="gradient-text">Anshil Gupta 🚀</span></h1>
+        <p class="subtitle">
+          <span class="blue">ISE Student</span> |
+          <span class="purple">Tech Enthusiast</span> |
+          <span class="pink">Dreaming Beyond the Stars</span>
+        </p>
+        <div class="hero-buttons">
+          <a href="assets/IBMDesign20250816-30-um0oqn.pdf" class="btn gradient">Explore My Universe</a>
+          <a href="assets/aaaaa.pdf" class="btn outline" download aria-label="Download Anshil Gupta resume">Download CV</a>
+        </div>
+      </div>
+      <div class="rocket-icon">🛸</div>
+    </section>
+
+    <!-- About -->
+    <section id="about" class="about">
+      <h2>About Me</h2>
+      <div class="about-content">
+        <div class="about-card">
+          <div class="about-img"></div>
+          <h3>Anshil Gupta</h3>
+          <p class="major">Information Science & Engineering</p>
+          <p class="desc">
+            A passionate ISE student with an insatiable curiosity for technology and innovation.
+            I believe in pushing the boundaries of what's possible and creating solutions that make a difference in the world.
+          </p>
+        </div>
+        <div class="about-info">
+          <h4 class="cyan">My Journey</h4>
+          <p>
+            Started as a curious mind fascinated by how technology shapes our world. Currently pursuing ISE,
+            diving deep into software engineering, data structures, and modern web technologies.
+          </p>
+          <h4 class="purple">What Drives Me</h4>
+          <p>
+            The intersection of creativity and logic in programming. I'm passionate about building
+            user-centric applications, exploring AI/ML, and contributing to open-source projects that
+            impact the developer community.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills -->
+    <section id="skills" class="skills">
+      <h2>Skills</h2>
+      <div class="skill-columns">
+        <div class="skill-card">
+          <div class="card-title">Frontend</div>
+          <ul>
+            <li>React</li>
+            <li>JavaScript</li>
+            <li>HTML5</li>
+            <li>CSS3</li>
+            <li>Tailwind</li>
+          </ul>
+        </div>
+        <div class="skill-card">
+          <div class="card-title">Backend</div>
+          <ul>
+            <li>Node.js</li>
+            <li>Express</li>
+            <li>Python</li>
+            <li>MongoDB</li>
+            <li>SQL</li>
+          </ul>
+        </div>
+        <div class="skill-card">
+          <div class="card-title">Web Tech</div>
+          <ul>
+            <li>REST APIs</li>
+            <li>Git</li>
+            <li>Postman</li>
+            <li>Git-Hub</li>
+            <li>Vercel</li>
+            
+          </ul>
+        </div>
+        <div class="skill-card">
+          <div class="card-title">Coding Languages</div>
+          <ul>
+            <li>C++</li>
+            <li>Java</li>
+            <li>Python</li>
+            <li>C</li>
+            <li>JavaScript</li>
+         
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects" class="projects">
+      <h2>Projects</h2>
+      <div class="projects-list">
+        <div class="project-card" data-title="Cosmic Dashboard">
+          <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" alt="Cosmic Dashboard"/>
+          <div class="project-info">
+            <h3>⚡ Cosmic Dashboard</h3>
+            <p>
+              A futuristic analytics dashboard with real-time data visualization and space-themed UI components.
+            </p>
+            <div class="tags">
+              <span>React</span>
+              <span>TypeScript</span>
+              <span>D3.js</span>
+              <span>Node.js</span>
+            </div>
+          </div>
+        </div>
+        <div class="project-card" data-title="Neural Network Explorer">
+          <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=600&q=80" alt="Neural Network Explorer"/>
+          <div class="project-info">
+            <h3>⚡ Neural Network Explorer</h3>
+            <p>
+              Interactive machine learning playground for experimenting with neural networks and AI models.
+            </p>
+            <div class="tags">
+              <span>Python</span>
+              <span>TensorFlow</span>
+              <span>React</span>
+              <span>Flask</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Space-themed modal (inserted) -->
+    <div id="space-modal-overlay" class="space-modal-overlay" aria-hidden="true">
+      <div class="space-modal" role="dialog" aria-modal="true" aria-labelledby="space-modal-title">
+        <div class="planet" aria-hidden="true">🪐</div>
+        <h3 id="space-modal-title">Work In Progress</h3>
+        <p id="space-modal-message">This project is currently under construction. Please check back soon — the crew is building something stellar! ✨</p>
+        <div class="actions">
+          <button type="button" class="btn-close" id="space-modal-close">Close</button>
+          <button type="button" class="btn-snooze" id="space-modal-snooze">Remind me later</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact -->
+    <section id="contact" class="contact">
+      <h2>Contact Me</h2>
+      <div class="contact-flex">
+        <div class="info-section">
+          <div class="star-label">
+            <span>✨</span>Let's Connect Across the Galaxy
+          </div>
+          <p>
+            Ready to embark on a coding journey together? Whether you want to discuss projects,
+            share ideas, or just say hello from across the digital cosmos, I'm always excited
+            to connect with fellow space travelers!
+          </p>
+          <div class="contact-card">
+            <div class="contact-ico-holder">📧</div>
+            <div>
+              <span class="contact-label">Email</span>
+              <a href="mailto:anshil.gupta@example.com" class="contact-value">anshilgupta9838@gmail.com</a>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-ico-holder">📞</div>
+            <div>
+              <span class="contact-label">Phone</span>
+              <a href="tel:+911234567890" class="contact-value">+91 9682818237</a>
+            </div>
+          </div>
+        </div>
+        <form class="contact-form" autocomplete="off">
+          <label for="name">Your Name</label>
+          <input id="name" name="name" type="text" placeholder="Enter your name" required>
+          <label for="email">Email Address</label>
+          <input id="email" name="email" type="email" placeholder="your@email.com" required>
+          <label for="message">Message</label>
+          <textarea id="message" name="message" placeholder="Tell me about your project or just say hello!" rows="5" required></textarea>
+          <button type="submit">Send Message</button>
+        </form>
+      </div>
+    </section>
+  </main>
+  <footer>
+    Made with <span class="footer-glow">love</span> and <span class="footer-glow">space</span> by Anshil Gupta 🚀
+  </footer>
+  <script>
+    // ---- Moving, Twinkling Stars ----
+    const canvas = document.getElementById('stars-canvas');
+    const ctx = canvas.getContext('2d');
+    let stars = [], w, h;
+    function resize() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize); resize();
+    function randomStar() {
+      return {
+        x: Math.random()*w,
+        y: Math.random()*h,
+        r: Math.random()*1.4+0.7,
+        dx: Math.random()*0.17-0.085,
+        dy: 0.13 + Math.random()*0.16,
+        baseAlpha: Math.random()*0.55+0.38,
+        twinkleSpeed: Math.random()*0.02+0.013,
+        phase: Math.random()*Math.PI*2
+      };
+    }
+    function createStars() {
+      stars=[]; for(let i=0;i<140;++i) stars.push(randomStar());
+    }
+    createStars();
+    function animateStars() {
+      ctx.clearRect(0,0,w,h);
+      for (let i=0;i<stars.length;i++) {
+        let s=stars[i];
+        let alpha = s.baseAlpha + 0.33*Math.sin(performance.now()*s.twinkleSpeed+s.phase);
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.beginPath();
+        ctx.arc(s.x,s.y,s.r,0,2*Math.PI);
+        ctx.fillStyle='#fff';
+        ctx.shadowColor = "#fff";
+        ctx.shadowBlur = 11*s.r;
+        ctx.fill();
+        ctx.restore();
+        // Move
+        s.y += s.dy;
+        s.x += s.dx;
+        if (s.y > h) { s.x=Math.random()*w; s.y=0; }
+        if (s.x > w) s.x=0;
+        if (s.x<0) s.x=w;
+      }
+      requestAnimationFrame(animateStars);
+    }
+    animateStars();
+    window.addEventListener('resize', ()=>{resize();createStars();});
+
+    // ---- Smooth Scroll and Active Link Highlight---
+    document.querySelectorAll('nav a').forEach(link => {
+      link.addEventListener('click', function(e) {
+        if(this.hash) {
+          e.preventDefault();
+          document.querySelectorAll('nav a').forEach(a=>a.classList.remove('active'));
+          this.classList.add('active');
+          const section = document.querySelector(this.hash);
+          if(section) {
+            window.scrollTo({ top: section.offsetTop - 56, behavior: 'smooth' });
+          }
+        }
+      });
+    });
+
+    // ---- Contact Form (demo only: just alert) ----
+    document.querySelector('.contact-form').addEventListener('submit',function(e){
+      e.preventDefault();
+      alert('Thank you for reaching out!\nI will connect with you soon 🚀');
+      this.reset();
+    });
+  </script>
+</body>
+</html>
